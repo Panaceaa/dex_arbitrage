@@ -16,6 +16,18 @@ crv_polygon = '0x172370d5Cd63279eFa6d502DAB29171933a610AF'
 usdc_polygon = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
 
 
+"""
+Pools
+eth
+weth/crv 0x4c83a7f819a5c37d64b4c5a2f8238ea082fa1f4e - 1.0% (tvl - 7.5kk USD)
+weth/crv 0x919fa96e88d67499339577fa202345436bcdaf79 - 0.3% (tvl - 134k USD)
+weth/matic 0x290a6a7460b308ee3f19023d2d00de604bcf5b42 - 0.3% (tvl - 17.4kk USD)
+usdc/matic 0x07a6e955ba4345bae83ac2a6faa771fddd8a2011 - 0.3% (tvl - 401.1kk USD)
+weth/usdc 0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640 - 0.05% (tvl - 300kk USD)
+"""
+pools_eth = {'uni': []}
+
+
 def open_abi(w3: Web3, abi: str, address: AddressLike):
     address = Web3.toChecksumAddress(address)
     with open(f'{abi}.abi', 'r') as f:
@@ -32,12 +44,14 @@ decimal_token1 = open_abi(connection_eth, 'abi/erc20', Web3.toChecksumAddress(us
 print(decimal_token0)
 print(decimal_token1)
 
+univ3_price = open_abi(connection_eth, 'abi_sushi/abi_pool', Web3.toChecksumAddress('0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac')).functions.allPairsLength().call()
+print(univ3_price)
 
 for i in range(100):
     quote_contract = Web3.toChecksumAddress(quote_contract)
     univ3_price = open_abi(connection_eth, 'abi/quotes', quote_contract).functions.quoteExactOutputSingle(usdc_eth,
                                                                                                           crv_eth,
-                                                                                                          10000,
+                                                                                                          3000,
                                                                                                           100*10 ** decimal_token0,
                                                                                                           0).call()
     print(univ3_price / (10 ** decimal_token1))
